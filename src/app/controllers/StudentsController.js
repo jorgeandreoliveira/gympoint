@@ -35,7 +35,9 @@ class StudentsController {
       return res.status(400).json({ error: 'Falha na validação' });
     }
 
-    const studentExists = await Students.findOne({ where: {email: req.body.email } });
+    const studentExists = await Students.findOne({
+       where: {email: req.body.email }
+      });
 
     if (studentExists) {
       return res.status(400).json({ error: 'Aluno já cadastrado' });
