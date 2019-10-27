@@ -4,6 +4,7 @@ import UserController from './app/controllers/UserController';
 import StudentsController from './app/controllers/StudentsController';
 import PlanController from './app/controllers/PlanController';
 import SessionController from './app/controllers/SessionController';
+import RegistrationController from './app/controllers/RegistrationController';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -24,5 +25,11 @@ routes.get('/plans', PlanController.index);
 routes.post('/plans', PlanController.store);
 routes.put('/plans/:id', PlanController.update);
 routes.delete('/plans/:id', PlanController.destroy);
+
+//listagem/cadastro/atualização/remoção de matrículas
+routes.get('/registrations', RegistrationController.index);
+routes.post('/registrations', RegistrationController.store);
+routes.put('/registrations/:id', RegistrationController.update);
+routes.delete('/registrations/:id', RegistrationController.destroy);
 
 export default routes;

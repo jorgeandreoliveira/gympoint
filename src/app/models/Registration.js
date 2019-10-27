@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Plan extends Model {
+class Registration extends Model {
   static init (sequelize) {
     super.init(
       {
@@ -9,12 +9,13 @@ class Plan extends Model {
           primaryKey: true,
           autoIncrement: true
         },
-        title: Sequelize.STRING,
-        duration: Sequelize.INTEGER,
+
+        start_date: Sequelize.DATE,
+        end_date: Sequelize.DATE,
         price: Sequelize.INTEGER
       },
       {
-        tableName: "plans",
+        tableName: "registrations",
         createdAt: "created_at",
         updatedAt: "updated_at",
         sequelize
@@ -23,6 +24,12 @@ class Plan extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsTo(models.Students, { foreignKey: 'student_id' });
+    this.belongsTo(models.Plan, { foreignKey: 'plan_id' });
+  }
+
 }
 
-export default Plan;
+export default Registration;
