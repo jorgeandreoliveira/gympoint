@@ -20,7 +20,7 @@ class CheckinController {
 
     const { id } = req.params;
 
-    const studentExists = await Students.findOne({ id });
+    const studentExists = await Students.findOne({ where: { id } });
 
     if (!studentExists) {
       return res.status(400).json({error: 'Aluno não encontrado'});
