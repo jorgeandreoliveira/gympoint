@@ -6,8 +6,16 @@ class PlanController {
 
   async index (req, res) {
 
-    const plans = await Plans.findAll();
+    const { id } = req.params;
 
+    let plans = [];
+
+    if(id) {
+      plans = await Plans.findByPk(id);
+    }
+    else {
+      plans = await Plans.findAll();
+    }
     return res.json(plans);
   };
 

@@ -1,11 +1,30 @@
 import * as Yup from 'yup';
+import Sequelize from 'sequelize';
 import Students from '../models/Students';
 
 class StudentsController {
 
   async index(req, res) {
 
-    const students = await Students.findAll();
+    const { nome, id } = req.params;
+
+    let students = [];
+
+    if (id) {
+      students = await Students.findByPk(id)
+    }
+    else if (nome) {
+      students = await Students.findAll({
+        where: {
+          nome: {
+            [Sequelize.Op.like]: '%' + nome + '%'
+          }
+        }
+      });
+    }
+    else {
+      students = await Students.findAll();
+    }
 
     return res.json(students);
   };
@@ -78,6 +97,21 @@ class StudentsController {
     const _student = await student.update(req.body);
 
     return res.json(_student);
+  }
+
+  async delete(req, res) {
+
+    const { id } = req.params;
+
+    const student = await Students.findByPk(id);
+
+    if (!student) {
+      return res.status(400).json({ error: 'Aluno não encontrado' });
+    }
+
+    await student.destroy();
+
+    return res.status(200).json({ msg: 'Aluno excluído com sucesso' });
   }
 }
 

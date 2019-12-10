@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import HelpOrder from "../models/HelpOrder";
-import Students from "../models/Students";
+import Student from '../models/Students';
 import Mail from '../../lib/Mail';
 
 class HelpOrderController {
@@ -9,17 +9,21 @@ class HelpOrderController {
 
     const { id } = req.params;
 
-    const studentExists = await Students.findOne({ where: { id } });
-
-    if (!studentExists) {
-      return res.status(400).json({error: 'Aluno não encontrado'});
+    if (id) {
+      return res.json(await HelpOrder.findOne({ where: { id } }));
     }
-
-    return res.json(await HelpOrder.findAll({
-      where: {
-        student_id: req.params.id
-      }
-    }));
+    else
+    {
+      return res.json(await HelpOrder.findAll({
+        attributes: ['id'],
+        include: [
+          {
+            model: Student,
+            attributes: ['nome']
+          }
+        ]
+      }));
+    }
   }
 
   async store(req, res) {

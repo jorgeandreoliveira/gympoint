@@ -11,9 +11,32 @@ import Mail from '../../lib/Mail';
 class RegistrationController {
 
   async index (req, res) {
-    const registrations = await Registration.findAll();
 
-    return res.json(registrations);
+    const { id } = req.params;
+
+    let registrations = [];
+
+    if(id) {
+      registrations = await Registration.findByPk(id);
+    }
+    else {
+      registrations = await Registration.findAll({
+      attributes: ['id', 'student_id', 'plan_id', 'start_date', 'end_date', 'price', 'active'],
+      include: [
+        {
+          model: Student,
+          attributes: ['id', 'nome']
+        },
+        {
+          model: Plan,
+          attributes: ['id', 'title']
+        }
+      ]
+    });
+  }
+
+  return res.json(registrations);
+
   }
 
   async store(req, res) {
@@ -32,9 +55,16 @@ class RegistrationController {
       where: {student_id: req.body.student_id}
     });
 
+    console.log(_alunoMatriculado);
+
     if (_alunoMatriculado) {
         return res.status(400).json({ error: 'Aluno já matriculado' });
     }
+
+    console.log('valido');
+
+    //return res.json();
+
 
     const _student = await Student.findByPk(req.body.student_id);
     if (!_student) {
@@ -117,7 +147,6 @@ class RegistrationController {
     if (format(registration.start_date, 'yyyy-MM-dd') !=
         format(parseISO(start_date), 'yyyy-MM-dd')) {
 
-      console.log('entrei');
       const _plan = await Plan.findByPk(registration.plan_id);
 
       //Cálculo da data de término
